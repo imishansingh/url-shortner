@@ -33,14 +33,14 @@ This single project teaches every major CS discipline.
 
 ## 11-Week Roadmap
 
-### Phase 1 — Foundations (Weeks 1-2)
+### Phase 1 — Foundations (Weeks 1-2) ✓
 **Topics:** How the internet works · Git & GitHub · Project structure
 
-- [ ] Understand HTTP, DNS, client-server model
-- [ ] Install Git, create GitHub account
-- [ ] Learn: commit, branch, push, pull
-- [ ] Initialize this project repo on GitHub
-- [ ] Set up Python environment (venv)
+- [x] Understand HTTP, DNS, client-server model
+- [x] Install Git, create GitHub account
+- [x] Learn: commit, branch, push, pull
+- [x] Initialize this project repo on GitHub
+- [x] Set up Python environment (venv)
 
 **Deliverable:** Project repo on GitHub with a README
 
@@ -49,8 +49,8 @@ This single project teaches every major CS discipline.
 ### Phase 2 — Backend API (Weeks 3-5)
 **Topics:** REST APIs · FastAPI · PostgreSQL · SQL · JWT Authentication
 
-- [ ] Understand what an API is and REST principles
-- [ ] Build FastAPI app with first endpoints
+- [x] Understand what an API is and REST principles
+- [x] Build FastAPI app with first endpoints
 - [ ] Connect to PostgreSQL database
 - [ ] Design the database schema (users, urls, clicks tables)
 - [ ] Write SQL queries (SELECT, INSERT, JOIN)
@@ -136,4 +136,4 @@ This single project teaches every major CS discipline.
 
 ## Current Phase
 
-**Phase 1 — Foundations** (started 2026-05-20)
+**Phase 2 — Backend API** (started 2026-05-28)
