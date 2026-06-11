@@ -2,6 +2,7 @@ import random
 import string
 
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -13,6 +14,14 @@ from .models import Click, Url, User
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class RegisterRequest(BaseModel):
@@ -59,6 +68,21 @@ def shorten_url(url: str, db: Session = Depends(get_db), current_user: User = De
     db.commit()
     db.refresh(new_url)
     return {"short_code": code, "original_url": url, "owner": current_user.email}
+
+
+@app.get("/urls")
+def get_user_urls(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    urls = db.query(Url).filter(Url.user_id == current_user.id).all()
+    result = []
+    for url in urls:
+        click_count = db.query(Click).filter(Click.url_id == url.id).count()
+        result.append({
+            "id": url.id,
+            "original_url": url.original_url,
+            "short_code": url.short_code,
+            "clicks": click_count,
+        })
+    return result
 
 
 @app.get("/{short_code}")
