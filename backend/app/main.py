@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from .auth import create_token, get_current_user, hash_password, verify_password
+from .cache import check_rate_limit, redis_client
 from .database import Base, engine, get_db
 from .models import Click, Url, User
 
@@ -60,7 +61,7 @@ def login(body: LoginRequest, db: Session = Depends(get_db)):
     return {"access_token": token, "token_type": "bearer"}
 
 
-@app.post("/shorten")
+@app.post("/shorten", dependencies=[Depends(check_rate_limit)])
 def shorten_url(url: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     code = "".join(random.choices(string.ascii_letters + string.digits, k=6))
     new_url = Url(original_url=url, short_code=code, user_id=current_user.id)
@@ -87,10 +88,20 @@ def get_user_urls(db: Session = Depends(get_db), current_user: User = Depends(ge
 
 @app.get("/{short_code}")
 def redirect_url(short_code: str, db: Session = Depends(get_db)):
-    url = db.query(Url).filter(Url.short_code == short_code).first()
-    if not url:
-        raise HTTPException(status_code=404, detail="URL not found")
-    click = Click(url_id=url.id)
+    cached = redis_client.hgetall(short_code)
+    if cached:
+        url_id = int(cached["id"])
+        original_url = cached["original_url"]
+    else:
+        url = db.query(Url).filter(Url.short_code == short_code).first()
+        if not url:
+            raise HTTPException(status_code=404, detail="URL not found")
+        url_id = url.id
+        original_url = url.original_url
+        redis_client.hset(short_code, mapping={"id": url_id, "original_url": original_url})
+
+    click = Click(url_id=url_id)
     db.add(click)
     db.commit()
-    return RedirectResponse(url=url.original_url)
+    return RedirectResponse(url=original_url)
+     
