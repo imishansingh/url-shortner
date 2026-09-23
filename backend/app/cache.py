@@ -1,10 +1,16 @@
+import os
+
 import redis
 from fastapi import Depends, HTTPException, status
 
 from .auth import get_current_user
 from .models import User
 
-redis_client = redis.Redis(host="localhost", port=6379, decode_responses=True)
+redis_client = redis.Redis(
+    host=os.environ.get("REDIS_HOST", "localhost"),
+    port=int(os.environ.get("REDIS_PORT", 6379)),
+    decode_responses=True,
+)
 
 RATE_LIMIT = 5
 WINDOW_SECONDS = 60

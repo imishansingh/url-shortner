@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status
@@ -9,7 +10,7 @@ from sqlalchemy.orm import Session
 from .database import get_db
 from .models import User
 
-SECRET_KEY = "change-this-to-a-random-secret-in-production"
+SECRET_KEY = os.environ["SECRET_KEY"]
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
