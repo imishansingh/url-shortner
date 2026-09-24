@@ -30,8 +30,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/urlshortener
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
     ports:
       - "8000:8000"
     depends_on:

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_URL } from '../api'
 
 export default function Dashboard() {
   const [urls, setUrls] = useState([])
@@ -17,7 +18,7 @@ export default function Dashboard() {
   }, [])
 
   async function fetchUrls() {
-    const res = await fetch('/api/urls', {
+    const res = await fetch(`${API_URL}/urls`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     if (res.ok) {
@@ -30,7 +31,7 @@ export default function Dashboard() {
   async function handleShorten(e) {
     e.preventDefault()
     setError('')
-    const res = await fetch(`/api/shorten?url=${encodeURIComponent(newUrl.trim())}`, {
+    const res = await fetch(`${API_URL}/shorten?url=${encodeURIComponent(newUrl.trim())}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -91,7 +92,7 @@ export default function Dashboard() {
                   </a>
                 </td>
                 <td>
-                  <a href={`http://localhost:8000/${url.short_code}`} target="_blank" rel="noreferrer">
+                  <a href={`${API_URL}/${url.short_code}`} target="_blank" rel="noreferrer">
                     {url.short_code}
                   </a>
                 </td>

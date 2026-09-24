@@ -6,9 +6,8 @@ from fastapi import Depends, HTTPException, status
 from .auth import get_current_user
 from .models import User
 
-redis_client = redis.Redis(
-    host=os.environ.get("REDIS_HOST", "localhost"),
-    port=int(os.environ.get("REDIS_PORT", 6379)),
+redis_client = redis.from_url(
+    os.environ.get("REDIS_URL", "redis://localhost:6379"),
     decode_responses=True,
 )
 
